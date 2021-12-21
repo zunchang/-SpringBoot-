@@ -1,0 +1,30 @@
+
+spring:
+  thymeleaf:
+    cache: false
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/myblog?serverTimezone=Asia/Shanghai
+    username: root
+    password: kang0213@.
+
+mybatis:
+  mapper-locations: classpath:mapping/*.xml
+  type-aliases-package: com.springbootmyblog.model
+
+
+pagehelper:                #分页插件
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+
+#日志配置文件
+logging:
+  level:
+    root: info
+    com.springbootmyblog: debug
+  file:
+    name: log/blog.log
+
+comment.avatar: /images/beijing.jpeg

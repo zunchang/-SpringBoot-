@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springbootmyblog.mapper.BlogMapper">
+
+    <resultMap id="blog" type="Blog">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="flag" column="flag"/>
+        <result property="views" column="views"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="typeId" column="type_id"/>
+        <result property="firstImage" column="first_Image"/>
+        <result property="reprintStatement" column="reprint_statement"/>
+        <result property="published" column="published"/>
+        <result property="appreciation" column="appreciation"/>
+        <result property="commentabled" column="commentabled"/>
+        <result property="description" column="description"/>
+        <result property="recommend" column="recommend"/>
+        <result property="createTime" column="create_time"/>
+        <result property="typeId" column="type_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="tagIds" column="tag_ids"/>
+        <association property="type" javaType="Type">
+            <id property="id" column="typeid"/>
+            <result property="name" column="typename"/>
+        </association>
+        <association property="user" javaType="User">
+            <id property="id" column="uid"/>
+            <result property="nickname" column="nickname"/>
+            <result property="username" column="username"/>
+            <result property="email" column="email"/>
+            <result property="avatar" column="avatar"/>
+        </association>
+        <collection property="tags" ofType="Tag">
+            <id property="id" column="tagid"/>
+            <result property="name" column="tagname"/>
+        </collection>
+    </resultMap>
+
+    <select id="findGroupYear" resultType="String">
+    select DATE_FORMAT(b.update_time,'%Y') from t_blog b order by b.update_time desc
+    </select>
+
+    <select id="findByYear" resultMap="blog">
+        select b.title, b.update_time, b.id, b.flag
+        from t_blog b
+        where DATE_FORMAT(b.update_time, "%Y") = #{year}
+    </select>
+    
+    <select id="getByTypeId" resultMap="blog">/*根据类型id获取博客*/
+    select b.id, b.title, b.first_Image, b.views, b.update_time, b.description,
+           t.name typename, t.id typeid,
+           u.nickname, u.avatar
+    from t_blog b, t_type t, t_user u
+    where b.type_id = t.id and u.id = b.user_id and b.type_id = #{typeId} order by b.update_time desc
+    </select>
+
+    <select id="getByTagId" resultMap="blog">/*根据标签id获取博客*/
+        select b.id, b.title, b.first_Image, b.views, b.update_time, b.description,
+               t.name typename, t.id typeid,
+               t1.name tagname, t1.id tagid,
+               u.nickname, u.avatar
+        from t_blog b, t_type t, t_user u, t_blog_tags tb, t_tag t1
+        where b.type_id = t.id and u.id = b.user_id and tb.blog_id = b.id and tb.tag_id = t1.id and t1.id = #{tagId}
+        order by b.update_time desc
+    </select>
+
+
+    <select id="getBlog" resultMap="blog"> /*后台展示博客*/
+    select b.id, b.published, b.flag, b.title, b.content, b.type_id,
+           b.tag_ids, b.first_Image, b.recommend,b.description,
+           b.reprint_statement, b.appreciation, b.commentabled
+    from t_blog b  where  b.id = #{id};
+    </select>
+
+    <select id="getIndexBlog" resultMap="blog">  /*主页博客展示*/
+    select b.id,b.title,b.description,b.first_Image,b.views,b.update_time,
+           t.name typename,t.id typeid,
+           u.nickname nickname,u.avatar
+    FROM t_blog b,t_type t,t_user u
+    WHERE b.type_id = t.id and  u.id = b.user_id order by b.update_time desc
+    </select>
+
+    <select id="getAllRecommendBlog" resultMap="blog">/*获取推荐博客列表*/
+        select id, title, recommend from t_blog order by update_time desc;
+    </select>
+
+    <select id="getAllBlog" resultMap="blog">/*后台博客列表*/
+        SELECT  b.id, b.title, b.update_time, b.recommend, b.type_id, b.published,
+                t.id typeid, t.name typename
+        from t_blog b,t_type t
+        where b.type_id=t.id
+    </select>
+
+    <select id="getDetailedBlog" resultMap="blog">  /*博客详情*/
+    select b.id, b.first_Image, b.flag, b.title, b.content, b.views,
+           b.update_time,b.commentabled, b.reprint_statement, b.appreciation,
+           u.nickname, u.avatar,b.published,b.recommend,
+           tag.id tagid, tag.name tagname
+    from t_blog b, t_user u, t_tag tag, t_blog_tags tb
+    where b.user_id = u.id and tb.blog_id = b.id and tb.tag_id = tag.id and  b.id = #{id}
+    </select>
+    
+    <update id="viewIncrease">
+        update t_blog set views=#{views}+1 WHERE id=#{id}
+    </update>
+
+    <select id="searchAllBlog" resultMap="blog">
+        SELECT  b.id, b.title, b.update_time, b.recommend, b.published, b.type_id, t.id typeid, t.name typename
+        from t_blog b,t_type t
+        <where>
+            <if test="1 == 1">
+                b.type_id =t.id    /*博客类型id=类型id*/
+            </if>
+            <if test="typeId != null">
+                and b.type_id = #{typeId}       /*根据博客类型查询*/
+            </if>
+            <if test="recommend != null">
+                and b.recommend = #{recommend}   /*根据博客推荐查询*/
+            </if>
+            <if test="title != null">
+                and b.title like "%"#{title}"%"  /*根据博客title模糊查询*/
+            </if>
+        </where>
+    </select>
+
+    <select id="getSearchBlog" resultMap="blog">
+        select b.id, b.title, b.first_Image, b.views, b.update_time, b.description,
+        t.name typename,
+        u.nickname, u.avatar
+        from t_blog b, t_type t, t_user u
+        where b.type_id = t.id and  u.id = b.user_id and (b.title like "%"#{query}"%" or b.content like  "%"#{query}"%")
+        order by b.update_time desc
+    </select>
+
+    <!--useGeneratedKeys="true"；使用自增主键获取主键值策略
+    keyProperty；指定对应的主键属性，也就是mybatis获取到主键值以后，将这个值封装给javaBean的哪个属性
+-->
+    <insert id="saveBlog" useGeneratedKeys="true" keyProperty="id">
+        insert into t_blog(title, content, first_Image, flag,
+                           views, appreciation, reprint_statement, commentabled,published,
+                           recommend, create_time, update_time, type_id, user_id,tag_ids,description)
+                           values(#{title}, #{content}, #{firstImage}, #{flag}, #{views}, #{appreciation},
+                                  #{reprintStatement}, #{commentabled}, #{published}, #{recommend}, #{createTime},
+                                  #{updateTime}, #{typeId},#{userId},#{tagIds},#{description})
+    </insert>
+
+
+    <insert id="saveBlogAndTag" parameterType="BlogAndTag">
+        insert into t_blog_tags (tag_id, blog_id) values (#{tagId},#{blogId});
+    </insert>
+
+    <update id="updateBlogAndTag" parameterType="BlogAndTag">
+        update t_blog_tags set tag_id=#{tagId} where blog_id=#{blogId};
+    </update>
+
+    <!--修改博客-->
+    <update id="updateBlog" parameterType="Blog" >
+        update t_blog set published = #{published},flag = #{flag} ,
+                          title = #{title}, content = #{content}, type_id = #{typeId}, tag_ids = #{tagIds},
+                          first_Image= #{firstImage} ,  recommend = #{recommend} ,description=#{description},
+                          reprint_statement = #{reprintStatement}, appreciation = #{appreciation},
+                          commentabled = #{commentabled} ,update_time = #{updateTime} where id = #{id};
+    </update>
+
+    <!--删除博客-->
+    <delete id="deleteBlog">
+        delete from t_blog WHERE id=#{id}
+    </delete>
+
+
+
+
+</mapper>

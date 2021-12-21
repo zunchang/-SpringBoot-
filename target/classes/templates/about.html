@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="_fragments :: head(~{::title})">
+    <title>关于我</title>
+</head>
+<body>
+
+    <!--导航-->
+    <nav th:replace="_fragments :: menu(5)"></nav>
+
+    <!--中间内容-->
+    <div class="m-container m-padded-tb-big">
+
+        <div class="ui stackable grid">
+            <div class="ten wide column">
+                <img src="../static/images/m3.jpg" th:src="@{/images/m3.jpg}" alt="" class="ui rounded image" style="width: 30em">
+            </div>
+            <div class="six wide column">
+                <div class="ui top attached segment">
+                    <div class="ui header">关于我</div>
+                </div>
+                <div class="ui attached segment">
+                    <p class="m-text">平平无奇的编程小废物，问啥啥不会，渴望进步</p>
+                    <p class="m-text">我一直相信，只要不断努力，一定可以成为卷王</p>
+                </div>
+                <div class="ui attached segment">
+                    <div class="ui orange basic label">IT</div>
+                    <div class="ui orange basic label">思考</div>
+                    <div class="ui orange basic label">预备卷王</div>
+                    <div class="ui orange basic label">民谣</div>
+                    <div class="ui orange basic label">文艺复兴</div>
+                </div>
+                <div class="ui bottom attached segment">
+                    <div class="ui teal basic left pointing label m-margin-tb-tiny">Java</div>
+                    <div class="ui teal basic left pointing label m-margin-tb-tiny">Spring</div>
+                    <div class="ui teal basic left pointing label m-margin-tb-tiny">SpringMVC</div>
+                    <div class="ui teal basic left pointing label m-margin-tb-tiny">MyBaits</div>
+                    <div class="ui teal basic left pointing label m-margin-tb-tiny">MySQL</div>
+                    <div class="ui teal basic left pointing label m-margin-tb-tiny">Redis</div>
+                    <div class="ui teal basic left pointing label m-margin-tb-tiny">Dubbo</div>
+                    <div class="ui teal basic left pointing label m-margin-tb-tiny">......</div>
+                </div>
+                <div class="ui bottom attached segment">
+                    <a href="#" class="ui circular icon button"><i class="github icon"></i> </a>
+                    <a href="#" class="ui wechat circular icon button" data-content="k2411219099"><i class="weixin icon"></i> </a>
+                    <a href="#" class="ui qq circular icon button "data-content="2411219099"><i class="qq icon"></i> </a>
+                </div>
+                <div class="ui wechat-qr flowing popup transition hidden">
+                    <img src="../static/images/m1.png" th:src="@{/images/m1.png}" alt="" class="ui rounded image" style="width: 100px">
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <!--底部-->
+    <footer th:replace="_fragments :: footer"></footer>
+
+
+    <!--导入的script-->
+    <th:block th:replace="_fragments :: script"></th:block>
+
+
+<script>
+    $('.menu.toggle').click(function (){
+        $('.m-item').toggleClass('m-mobile-hide');
+    });
+    $('.qq').popup();
+    $('.weixin').popup({
+        popup:$('.wechat-qr'),
+        on:'hover',
+        position:'bottom center'
+    });
+
+
+</script>
+
+</body>
+</html>

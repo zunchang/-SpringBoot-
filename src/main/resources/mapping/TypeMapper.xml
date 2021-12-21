@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springbootmyblog.mapper.TypeMapper">
+
+    <!--两个id可能会相冲，取别名即可-->
+    <resultMap id="type" type="Type">
+        <id property="id" column="tid"/>
+        <result property="name" column="name"/>
+        <collection property="blogs" ofType="Blog">
+            <id property="id" column="bid"/>
+            <result property="title" column="title"/>
+            <result property="typeId" column="type_id"/>
+        </collection>
+    </resultMap>
+    
+    
+    <select id="getBlogType" resultMap="type">
+        SELECT t.id tid, t.name, b.id bid, b.title, b.type_id
+        FROM t_type t,t_blog b
+        where t.id = b.type_id
+    </select>
+    
+
+
+    <!--添加type-->
+    <insert id="saveType" useGeneratedKeys="true" keyProperty="id">
+        insert into t_type values (#{id},#{name});
+    </insert>
+
+    <!--依据id查询-->
+    <select id="getType" resultType="Type">
+        select id,name from t_type where id=#{id}
+    </select>
+ 
+    <!--依据name查询-->
+    <select id="getNameType" resultType="Type">
+        select * from t_type where name=#{name}
+    </select>
+
+    <select id="listType" resultType="Type">
+        select * from t_type
+    </select>
+
+
+    <update id="upDataType" parameterType="com.springbootmyblog.model.Type">
+        update t_type set name=#{name} where id=#{id};
+    </update>
+
+    <delete id="deleteType">
+        delete from t_type where id=#{type.id}
+    </delete>
+</mapper>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="admin/_fragments :: head(~{::title})">
+    <title>新增分类</title>
+</head>
+
+<body>
+
+    <!--导航-->
+    <nav th:replace="admin/_fragments :: menu(2)"></nav>
+    <div class="ui attached pointing menu">
+        <div class="ui container">
+            <div class="right menu">
+                <a href="#" th:href="@{/admin/types/input}"  class="teal active item">新增</a>
+                <a href="#" th:href="@{/admin/types}" class="item">列表</a>
+            </div>
+        </div>
+    </div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <!--中间内容-->
+    <div class="m-container-small m-padded-tb-big">
+        <div class="ui container">
+            <form action="#" method="post" th:object="${type}"  th:action="*{id}==null ? @{/admin/types}:@{/admin/types/{id}(id=*{id})}" class="ui form">
+                <input type="hidden" name="id" th:value="*{id}">
+                <div class="required field">
+                    <div class="ui left labeled input">
+                        <label class="ui teal basic label">名称</label>
+                        <input type="text" name="name" placeholder="分类名称">
+                    </div>
+                </div>
+
+                <div class="ui error message"></div>
+                <div class="field">
+                    <div class="ui right aligned container">
+                        <button type="button" class="ui button" onclick="window.history.go(-1)">返回</button>
+                        <button class="ui teal submit button">提交</button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+
+    </div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <!--底部footer-->
+    <footer th:replace="admin/_fragments :: footer">
+
+    </footer>
+
+
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+
+<script>
+    $('.menu.toggle').click(function (){
+        $('.m-item').toggleClass('m-mobile-hide');
+    });
+    $('.ui.dropdown').dropdown({
+        on:'hover'
+    });
+    //表单验证
+    $('.ui.form').form({
+        fields:{
+            identifier:'name',
+            rules:[{
+                type:'empty',
+                prompt:'请输入类别名'
+            }]
+
+        }
+    })
+</script>
+
+</body>
+</html>
